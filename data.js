@@ -85,47 +85,7 @@ function saveTasks(tasks) {
 */
 
 function getSampleTasks() {
-    const today = todayISO();
-    return [
-        {
-            id: uid(), title: 'Morning standup',
-            date: today, schedule: 'time', startTime: 9, endTime: 10,
-            priority: 'high', label: 'Work', done: false, createdAt: Date.now(),
-            subtasks: [
-                { id: uid(), title: 'Check Slack', done: true },
-                { id: uid(), title: 'Update status', done: false },
-            ],
-        },
-        {
-            id: uid(), title: 'Gym session',
-            date: today, schedule: 'time', startTime: 7, endTime: 9,
-            priority: 'medium', label: 'Health', done: false, createdAt: Date.now(),
-            subtasks: [
-                { id: uid(), title: 'Warm up', done: true },
-                { id: uid(), title: 'Weights', done: true },
-                { id: uid(), title: 'Run 20 min', done: false },
-            ],
-        },
-        {
-            id: uid(), title: 'Read a chapter',
-            date: today, schedule: 'none', startTime: null, endTime: null,
-            priority: 'low', label: 'Personal', done: true, createdAt: Date.now(), subtasks: [],
-        },
-        {
-            id: uid(), title: 'Project review meeting',
-            date: today, schedule: 'time', startTime: 14, endTime: 16,
-            priority: 'high', label: 'Work', done: false, createdAt: Date.now(),
-            subtasks: [
-                { id: uid(), title: 'Prepare slides', done: false },
-                { id: uid(), title: 'Review metrics', done: false },
-            ],
-        },
-        {
-            id: uid(), title: 'Team offsite planning',
-            date: today, schedule: 'allday', startTime: null, endTime: null,
-            priority: 'medium', label: 'Work', done: false, createdAt: Date.now(), subtasks: [],
-        },
-    ];
+    return [];
 }
 
 function createTask({ title, date, schedule, startTime, endTime, priority, label, subtasks }) {
