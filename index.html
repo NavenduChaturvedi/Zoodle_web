@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Zoodle — Daily Tracker</title>
+    <meta name="description" content="Zoodle: a mobile-first daily task tracker with time-block scheduling." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <!-- ===== TOP BAR ===== -->
+    <header class="top-bar">
+        <div class="app-brand">
+            <div class="brand-icon">Z</div>
+            <span class="brand-name">Zoodle</span>
+        </div>
+        <div class="day-nav">
+            <button class="day-nav-btn" onclick="shiftDay(-1)"><i data-lucide="chevron-left"></i></button>
+            <div class="day-nav-center">
+                <span class="day-label" id="day-label">Today</span>
+                <span class="day-date" id="day-date"></span>
+            </div>
+            <button class="day-nav-btn" onclick="shiftDay(1)"><i data-lucide="chevron-right"></i></button>
+        </div>
+        <button class="top-icon-btn" onclick="openLabelsSheet()" title="Manage Labels">
+            <i data-lucide="tag"></i>
+        </button>
+    </header>
+
+    <!-- ===== MAIN — SWIPEABLE DAY VIEW ===== -->
+    <main class="day-view-wrapper" id="day-view-wrapper">
+        <div class="day-view-slide" id="day-slide">
+
+            <!-- All Day tasks -->
+            <section class="allday-section" id="allday-section">
+                <div class="section-header">
+                    <span class="section-label"><i data-lucide="sun"></i> All Day</span>
+                    <span class="section-count" id="allday-count">0</span>
+                </div>
+                <div id="allday-list"></div>
+                <div class="unscheduled-empty" id="allday-empty">No all-day tasks</div>
+            </section>
+
+            <!-- Unscheduled tasks -->
+            <section class="unscheduled-section" id="unscheduled-section">
+                <div class="section-header">
+                    <span class="section-label"><i data-lucide="inbox"></i> Unscheduled</span>
+                    <span class="section-count" id="unscheduled-count">0</span>
+                </div>
+                <div class="unscheduled-list" id="unscheduled-list"></div>
+                <div class="unscheduled-empty" id="unscheduled-empty">No unscheduled tasks</div>
+            </section>
+
+            <!-- Timeline label -->
+            <div class="timeline-label-row">
+                <span>Schedule</span>
+                <hr />
+            </div>
+
+            <!-- Hourly Timeline -->
+            <div class="timeline" id="timeline"></div>
+
+            <div class="timeline-bottom-spacer"></div>
+        </div>
+    </main>
+
+    <!-- ===== FAB ===== -->
+    <button class="fab" onclick="openAddTask()"><i data-lucide="plus"></i></button>
+
+    <!-- ===== ADD TASK BOTTOM SHEET ===== -->
+    <div class="sheet-overlay" id="add-task-overlay" onclick="closeAddTaskOutside(event)">
+        <div class="bottom-sheet">
+            <div class="sheet-handle"></div>
+            <div class="sheet-header">
+                <span class="sheet-title" id="add-task-sheet-title">New Task</span>
+                <button class="sheet-close" onclick="closeAddTask()"><i data-lucide="x"></i></button>
+            </div>
+
+            <!-- Title -->
+            <div class="sheet-input-wrap">
+                <input type="text" id="task-title-input" class="sheet-main-input" placeholder="What do you need to do?"
+                    autocomplete="off" />
+            </div>
+
+            <!-- Schedule type -->
+            <div class="sheet-row">
+                <span class="row-label">When</span>
+                <div class="schedule-tabs">
+                    <button class="sched-tab" id="sched-none" onclick="setSchedule('none')">Unscheduled</button>
+                    <button class="sched-tab" id="sched-allday" onclick="setSchedule('allday')">All Day</button>
+                    <button class="sched-tab" id="sched-time" onclick="setSchedule('time')">Time Range</button>
+                </div>
+            </div>
+
+            <!-- Time range (shown when schedule='time') -->
+            <div class="sheet-row time-range-row" id="time-range-row" style="display:none">
+                <span class="row-label">Time</span>
+                <select id="task-start-time" class="time-select-sm" onchange="syncEndTime()"></select>
+                <span class="time-sep">→</span>
+                <select id="task-end-time" class="time-select-sm"></select>
+            </div>
+
+            <!-- Priority -->
+            <div class="sheet-row">
+                <span class="row-label">Priority</span>
+                <div class="priority-picker">
+                    <button class="pri-btn" data-value="none" onclick="selectPriority('none')">—</button>
+                    <button class="pri-btn" data-value="low" onclick="selectPriority('low')">Low</button>
+                    <button class="pri-btn" data-value="medium" onclick="selectPriority('medium')">Med</button>
+                    <button class="pri-btn" data-value="high" onclick="selectPriority('high')">High</button>
+                </div>
+            </div>
+
+            <!-- Label -->
+            <div class="sheet-row">
+                <span class="row-label">Label</span>
+                <div class="label-chips" id="label-chips"></div>
+            </div>
+
+            <!-- Subtasks -->
+            <div class="sheet-subtasks">
+                <div class="subtask-input-row">
+                    <input type="text" id="subtask-new-input" placeholder="Add a subtask…"
+                        onkeydown="handleSubtaskKey(event)" />
+                    <button onclick="addFormSubtask()"><i data-lucide="plus"></i></button>
+                </div>
+                <ul class="form-subtask-list" id="form-subtask-list"></ul>
+            </div>
+
+            <input type="hidden" id="editing-task-id" />
+
+            <button class="sheet-submit-btn" id="sheet-submit-btn" onclick="submitTask()">
+                Add Task
+            </button>
+        </div>
+    </div>
+
+    <!-- ===== LABELS SHEET ===== -->
+    <div class="sheet-overlay" id="labels-overlay" onclick="closeLabelsOutside(event)">
+        <div class="bottom-sheet">
+            <div class="sheet-handle"></div>
+            <div class="sheet-header">
+                <span class="sheet-title">Labels</span>
+                <button class="sheet-close" onclick="closeLabelsSheet()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="labels-list-section" id="labels-list-section"></div>
+            <div class="new-label-row">
+                <input type="text" id="new-label-input" placeholder="New label name…"
+                    onkeydown="if(event.key==='Enter') addLabel()" />
+                <div class="label-color-picker" id="label-color-picker"></div>
+                <button class="add-label-btn" onclick="addLabel()">
+                    <i data-lucide="plus"></i> Add Label
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== CONFIRM DELETE ===== -->
+    <div class="sheet-overlay" id="confirm-overlay" onclick="closeConfirmOutside(event)">
+        <div class="bottom-sheet confirm-sheet">
+            <div class="sheet-handle"></div>
+            <div class="confirm-icon-wrap"><i data-lucide="trash-2"></i></div>
+            <h3 class="confirm-title">Delete this task?</h3>
+            <p class="confirm-sub" id="confirm-sub">This cannot be undone.</p>
+            <div class="confirm-actions">
+                <button class="btn-ghost-sm" onclick="closeConfirm()">Cancel</button>
+                <button class="btn-danger-sm" id="confirm-delete-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
