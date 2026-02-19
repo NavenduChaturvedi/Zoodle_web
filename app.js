@@ -13,6 +13,25 @@ let currentSchedule = 'none';  // 'none' | 'allday' | 'time'
 let pendingDeleteId = null;
 let newLabelColor = DEFAULT_LABEL_COLORS[0];
 let touchStartX = 0, touchStartY = 0;
+let brandMenuOpen = false;
+
+// ── Brand dropdown ────────────────────────────────────────
+function toggleBrandMenu() {
+    brandMenuOpen = !brandMenuOpen;
+    document.getElementById('brand-btn').classList.toggle('open', brandMenuOpen);
+    document.getElementById('brand-dropdown').classList.toggle('open', brandMenuOpen);
+    lucide.createIcons();
+}
+
+// Close brand menu when clicking outside
+document.addEventListener('click', e => {
+    if (brandMenuOpen && !document.getElementById('brand-btn').contains(e.target)) {
+        brandMenuOpen = false;
+        document.getElementById('brand-btn').classList.remove('open');
+        document.getElementById('brand-dropdown').classList.remove('open');
+    }
+});
+
 
 // Hours displayed in timeline: 6 AM through 11 PM
 const HOURS = Array.from({ length: 18 }, (_, i) => i + 6); // 6..23

@@ -145,6 +145,17 @@ ul {
     align-items: center;
     gap: 8px;
     flex-shrink: 0;
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+    border-radius: var(--radius-sm);
+    padding: 4px 6px;
+    margin: -4px -6px;
+    transition: background var(--transition);
+}
+
+.app-brand:hover {
+    background: var(--bg-hover);
 }
 
 .brand-icon {
@@ -166,6 +177,86 @@ ul {
     letter-spacing: -0.3px;
     color: var(--text-primary);
 }
+
+.brand-chevron {
+    width: 14px;
+    height: 14px;
+    color: var(--text-muted);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.app-brand.open .brand-chevron {
+    transform: rotate(180deg);
+}
+
+/* ── Brand Dropdown ─────────────────────────────────────── */
+.brand-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    min-width: 180px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    z-index: 200;
+    overflow: hidden;
+    animation: dropIn 0.15s ease;
+}
+
+.brand-dropdown.open {
+    display: block;
+}
+
+@keyframes dropIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.brand-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 11px 14px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-align: left;
+    transition: background var(--transition), color var(--transition);
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.brand-menu-item:last-child {
+    border-bottom: none;
+}
+
+.brand-menu-item:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.brand-menu-item i {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    color: var(--text-muted);
+}
+
+.brand-menu-item:hover i {
+    color: var(--accent);
+}
+
+
 
 /* Day Nav */
 .day-nav {

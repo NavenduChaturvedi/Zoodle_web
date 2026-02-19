@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Zoodle — Daily Tracker</title>
     <meta name="description" content="Zoodle: a mobile-first daily task tracker with time-block scheduling." />
+    <link rel="icon" type="image/jpeg" href="favicon.jpeg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
@@ -18,9 +19,25 @@
 
     <!-- ===== TOP BAR ===== -->
     <header class="top-bar">
-        <div class="app-brand">
+        <div class="app-brand" id="brand-btn" onclick="toggleBrandMenu()">
             <div class="brand-icon">Z</div>
             <span class="brand-name">Zoodle</span>
+            <i data-lucide="chevron-down" class="brand-chevron" id="brand-chevron"></i>
+            <!-- Dropdown -->
+            <div class="brand-dropdown" id="brand-dropdown">
+                <button class="brand-menu-item" onclick="event.stopPropagation()">
+                    <i data-lucide="layout-dashboard"></i> Dashboard
+                </button>
+                <button class="brand-menu-item" onclick="event.stopPropagation()">
+                    <i data-lucide="calendar-days"></i> Calendar
+                </button>
+                <button class="brand-menu-item" onclick="event.stopPropagation()">
+                    <i data-lucide="bar-chart-2"></i> Analytics
+                </button>
+                <button class="brand-menu-item" onclick="event.stopPropagation()">
+                    <i data-lucide="settings"></i> Settings
+                </button>
+            </div>
         </div>
         <div class="day-nav">
             <button class="day-nav-btn" onclick="shiftDay(-1)"><i data-lucide="chevron-left"></i></button>
